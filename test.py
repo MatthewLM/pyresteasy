@@ -249,4 +249,5 @@ class TestREST(unittest.TestCase):
         res, cid = self.createCustomer()
         res = test_app.options("/customers/" + str(cid), status=204)
         self.assertEqual(res.headers["Allow"], "GET,PUT,DELETE")
+        
 

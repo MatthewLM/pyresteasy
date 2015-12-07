@@ -76,7 +76,7 @@ class JsonReq():
 
             try:
                 body = json.loads(env['wsgi.input'].read().decode('utf-8'))
-            except (ValueError, KeyError):
+            except ValueError:
                 raise BadRequest(body="Badly formatted JSON")
 
             return f(self, env, body, *args, **kargs)
