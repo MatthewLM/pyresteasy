@@ -1,0 +1,7 @@
+*.sw*
+Session.vim
+__pycache__
+build
+dist
+*.egg-info
+tags
