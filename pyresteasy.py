@@ -77,7 +77,7 @@ class JsonReq():
             try:
                 body = json.loads(env['wsgi.input'].read().decode('utf-8'))
             except ValueError:
-                raise BadRequest(body="Badly formatted JSON")
+                raise BadRequest("Badly formatted JSON")
 
             return f(self, env, body, *args, **kargs)
 
@@ -85,7 +85,7 @@ class JsonReq():
 
 class HttpInterrupt(Exception):
 
-    def __init__(self, headers={}, body=""):
+    def __init__(self, body="", headers={}):
         self.headers = headers
         self.body = body
 

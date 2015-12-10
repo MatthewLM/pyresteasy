@@ -114,13 +114,13 @@ class ResourceFailJson(pyresteasy.Resource):
 
     @pyresteasy.JsonResp()
     def GET(self, env):
-        raise pyresteasy.ServError({"Error": ERR_MESS}, ERR_MESS)
+        raise pyresteasy.ServError(ERR_MESS, {"Error": ERR_MESS})
 
 class ResourceFail(pyresteasy.Resource):
     path = "fail"
 
     def GET(self, env):
-        raise pyresteasy.ServError({"Error": ERR_MESS}, ERR_MESS)
+        raise pyresteasy.ServError(ERR_MESS, {"Error": ERR_MESS})
 
 test_app = TestApp(pyresteasy.RestEasy([
     Customers(), Customer(), Products(), Product(), ProdVersions(), ProdVersion(),
