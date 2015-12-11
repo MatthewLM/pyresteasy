@@ -72,14 +72,14 @@ class JsonReq():
 
     def __call__(self, f):
 
-        def jsonReqWrapper(self, env, *args, **kargs):
+        def jsonReqWrapper(self, app, env, *args, **kargs):
 
             try:
                 body = json.loads(env['wsgi.input'].read().decode('utf-8'))
             except ValueError:
                 raise BadRequest("Badly formatted JSON")
 
-            return f(self, env, body, *args, **kargs)
+            return f(self, app, env, body, *args, **kargs)
 
         return jsonReqWrapper
 
@@ -288,19 +288,19 @@ class RestEasy():
                 return (HTTP_METHOD_NOT_ALLOWED, allow, "")
 
             if method == "POST":
-                headers, body, rid = resource.POST(env, **res_ids)
+                headers, body, rid = resource.POST(self, env, **res_ids)
                 headers["Location"] = self.getURL(env, rid)
                 return (HTTP_CREATED, headers, body)
 
             if method == "GET":
-                headers, body = resource.GET(env, **res_ids)
+                headers, body = resource.GET(self, env, **res_ids)
                 return (HTTP_OK, headers, body)
 
             if method == "PUT":
-                headers, body = resource.PUT(env, **res_ids)
+                headers, body = resource.PUT(self, env, **res_ids)
 
             elif method == "DELETE":
-                headers, body = resource.DELETE(env, **res_ids)
+                headers, body = resource.DELETE(self, env, **res_ids)
 
             return (HTTP_OK if len(body) > 0 else HTTP_NO_CONTENT, headers, body)
 

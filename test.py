@@ -43,7 +43,7 @@ class Customers(pyresteasy.Resource):
     path = "customers"
 
     @pyresteasy.JsonReq()
-    def POST(self, env, json):
+    def POST(self, app, env, json):
         global cid_count
         cid = cid_count
         cid_count += 1
@@ -53,17 +53,17 @@ class Customers(pyresteasy.Resource):
 class Customer(pyresteasy.Resource):
     path = "customers/{cid:int}"
 
-    def DELETE(self, env, cid):
+    def DELETE(self, app, env, cid):
         del customers[cid]
         return [{}, ""]
 
     @pyresteasy.JsonReq()
-    def PUT(self, env, json, cid):
+    def PUT(self, app, env, json, cid):
         customers[cid].update(json)
         return [{}, ""]
 
     @pyresteasy.JsonResp()
-    def GET(self, env, cid):
+    def GET(self, app, env, cid):
         return [{}, customers[cid]]
 
 class Products(pyresteasy.Resource):
@@ -71,7 +71,7 @@ class Products(pyresteasy.Resource):
 
     @pyresteasy.JsonResp()
     @pyresteasy.JsonReq()
-    def POST(self, env, json):
+    def POST(self, app, env, json):
         pid = json["name"]
         products[pid] = json
         return [{}, {"id" : pid}, pid]
@@ -80,25 +80,25 @@ class Product(pyresteasy.Resource):
     path = "products/{pname}"
 
     @pyresteasy.JsonResp()
-    def DELETE(self, env, pname):
+    def DELETE(self, app, env, pname):
         del products[pname]
         return [{}, DELETE_PRODUCT_RES]
 
     @pyresteasy.JsonResp()
     @pyresteasy.JsonReq()
-    def PUT(self, env, json, pname):
+    def PUT(self, app, env, json, pname):
         products[pname].update(json)
         return [{}, products[pname]]
 
     @pyresteasy.JsonResp()
-    def GET(self, env, pname):
+    def GET(self, app, env, pname):
         return [{}, products[pname]]
 
 class ProdVersions(pyresteasy.Resource):
     path = "products/{pname}/versions"
 
     @pyresteasy.JsonReq()
-    def POST(self, env, json, pname):
+    def POST(self, app, env, json, pname):
         products[pname][json["version"]] = json
         return [{}, "", json["version"]]
 
@@ -106,20 +106,20 @@ class ProdVersion(pyresteasy.Resource):
     path = "products/{pname}/versions/{version:int}"
 
     @pyresteasy.JsonResp()
-    def GET(self, env, pname, version):
+    def GET(self, app, env, pname, version):
         return [{}, products[pname][version]]
 
 class ResourceFailJson(pyresteasy.Resource):
     path = "fail_json"
 
     @pyresteasy.JsonResp()
-    def GET(self, env):
+    def GET(self, app, env):
         raise pyresteasy.ServError(ERR_MESS, {"Error": ERR_MESS})
 
 class ResourceFail(pyresteasy.Resource):
     path = "fail"
 
-    def GET(self, env):
+    def GET(self, app, env):
         raise pyresteasy.ServError(ERR_MESS, {"Error": ERR_MESS})
 
 test_app = TestApp(pyresteasy.RestEasy([
